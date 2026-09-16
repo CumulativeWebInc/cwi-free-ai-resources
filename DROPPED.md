@@ -51,3 +51,20 @@
 ## Re-test policy
 
 Before re-adding anything: re-run the exact probe, get a 200 with real data, record the UTC timestamp. A signup completed by the owner (e.g. Hetzner, OpenRouter, Groq) promotes the candidate from this file into the registry with a live receipt.
+
+## Deep keyless sweep additions (2026-09-16 ~22:00 UTC)
+
+| Candidate | Probe | Result | Why dropped |
+|---|---|---|---|
+| ApiAirforce | `POST api.airforce/v1/chat/completions` (no key) ×2 | **401 "Missing Authorization"** (`auth_required`) both times; `/v1/models` → 200 (612 models, catalog public) | chat requires auth — keyless claim false |
+| Kilo AI Gateway | `POST api.kilo.ai/api/gateway/chat/completions` (no key, models `Hy3`, `kilo-auto-free`) ×2 | **401 PAID_MODEL_AUTH_REQUIRED** "You need to sign in to use this model" | "anonymous free" docs claim false — sign-in required |
+| Blackbox AI | `POST www.blackbox.ai/api/chat` → 404 HTML; `GET /api/models` → 404 | no API surface | endpoint dead/removed |
+| KeylessAI worker | `POST keylessai.thryx.workers.dev/v1/chat/completions` ×2; `/health` → 000 | connection closed / empty reply | aggregator down (its upstreams Pollinations + ApiAirforce probed directly) |
+| Pollinations new API (`gen.pollinations.ai/v1`) | `GET /v1/models` → 200 (372 models); `POST /v1/chat/completions` ×3 (qwen/deepseek/llama) | **401 "A valid API key is required"** | only the LEGACY `text.pollinations.ai/openai` endpoint is anonymous (1 model: `openai-fast`) |
+| OVHcloud chat completions | `POST /v1/chat/completions` ×5 (Qwen3-32B, Llama-3.3-70B, Mistral-7B, gpt-oss-20b; exact catalog IDs) | **429** every time (`x-ratelimit-remaining-minute: 0`) | anonymous tier documented (2 RPM/IP/model) but persistently throttled from this shared egress IP; embeddings + STT on same host serve fine — retry chat from a different IP |
+| OVHcloud TTS (`nvr-tts-en-us`) | `POST /v1/audio/speech` ×2 | 400 then 404 "unknown endpoint" | endpoint path/params unverified — use Google Translate TTS instead |
+| HuggingChat | `GET huggingface.co/chat/` | 200 HTML, no anonymous inference surface | login required for inference → see NOT-KEYLESS.md |
+| HF Spaces (gradio) | 2 llama chat spaces: `chuanli11/...uncensored` → 503 "space is in error"; `srgtuszy/llama-3.2-chatbot` → 502 | spaces dead | old demo spaces unmaintained; route is low-yield |
+| DuckDuckGo AI Chat | retry with browser headers: `GET /duckchat/v1/status` → 200 but no `vqd-4` token | anti-bot stands | 2nd failed probe — stays dropped |
+| Puter.js | `PUT /v2/drivers/call` (documented shape) → read timeout | 2nd failed probe (was 404) | stays dropped |
+| TextSynth | `GET api.textsynth.com/v1/engines` → 404 | key required per docs | → NOT-KEYLESS.md |
