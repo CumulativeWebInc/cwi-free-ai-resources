@@ -336,5 +336,70 @@
   "rate_limits": "unmeasured; be polite",
   "region": "global",
   "cwi_use_case": "cost estimation + model selection for agent products"
+ },
+ {
+  "name": "AI Horde (text)",
+  "url": "https://aihorde.net",
+  "category": "free_llm_inference",
+  "auth": "none",
+  "verified_at": "2026-09-16T22:03:33Z",
+  "test": "POST /api/v2/generate/text/async with documented anonymous apikey 0000000000 (no signup) -> 202 + request id; polled /api/v2/generate/text/status -> done, worker model aphrodite/SicariusSicariiStuff/Impish_Bloodmoon_12B returned exactly 'KEYLESS'",
+  "status": "HTTP 202/200",
+  "free_terms": "anonymous tier, lowest queue priority, no signup; community workers serve many open-weight models",
+  "rate_limits": "queue-based; anonymous slowest priority",
+  "region": "global",
+  "cwi_use_case": "2nd keyless model family for DNA portability cross-model runs; decentralized inference backend"
+ },
+ {
+  "name": "OVHcloud AI Endpoints \u2014 Embeddings",
+  "url": "https://oai.endpoints.kepler.ai.cloud.ovh.net/v1",
+  "category": "free_llm_inference",
+  "auth": "none",
+  "verified_at": "2026-09-16T22:06:54Z",
+  "test": "POST /v1/embeddings model=bge-m3 input='keyless embedding test' -> HTTP 200, 1024-dim vector; GET /v1/models -> 200, 25 models (chat, embeddings, whisper STT, SDXL, TTS)",
+  "status": "HTTP 200",
+  "free_terms": "anonymous tier per OVH docs (2 req/min/IP/model); OpenAI-compatible; EU-hosted (GDPR)",
+  "rate_limits": "2 RPM/IP/model (published); chat endpoint 429-throttled from this shared IP at probe time",
+  "region": "eu",
+  "cwi_use_case": "keyless embeddings for semantic search, dedupe, evidence pipelines; catalog maps 25 free models"
+ },
+ {
+  "name": "OVHcloud AI Endpoints \u2014 Whisper STT",
+  "url": "https://oai.endpoints.kepler.ai.cloud.ovh.net/v1",
+  "category": "free_speech_ai",
+  "auth": "none",
+  "verified_at": "2026-09-16T22:07:49Z",
+  "test": "POST /v1/audio/transcriptions (multipart) model=whisper-large-v3-turbo, file=TTS-generated 'The quick brown fox jumps' MP3 -> HTTP 200, transcription=' The quick brown fox jumps' (exact match)",
+  "status": "HTTP 200",
+  "free_terms": "anonymous tier; OpenAI-compatible audio endpoint",
+  "rate_limits": "2 RPM/IP/model (published)",
+  "region": "eu",
+  "cwi_use_case": "keyless speech-to-text for voice content pipelines, meeting/room transcription"
+ },
+ {
+  "name": "Google Translate TTS",
+  "url": "https://translate.google.com/translate_tts",
+  "category": "free_speech_ai",
+  "auth": "none",
+  "verified_at": "2026-09-16T22:00:13Z",
+  "test": "GET /translate_tts?ie=UTF-8&client=tw-ob&tl=en&q=Keyless+test+one+two -> HTTP 200, content-type audio/mpeg, 15552 bytes of playable speech",
+  "status": "HTTP 200",
+  "free_terms": "public web endpoint, no key; unofficial API \u2014 be polite",
+  "rate_limits": "unmeasured; be polite",
+  "region": "global",
+  "cwi_use_case": "keyless text-to-speech for content ops, accessibility, voice prototypes"
+ },
+ {
+  "name": "Pollinations Vision",
+  "url": "https://text.pollinations.ai",
+  "category": "free_llm_inference",
+  "auth": "none",
+  "verified_at": "2026-09-16T21:58:49Z",
+  "test": "POST /openai/chat/completions model=openai with image_url (Pollinations-generated red square) + 'What color is the square?' -> HTTP 200, model=gpt-oss-20b, returned a completion",
+  "status": "HTTP 200",
+  "free_terms": "anonymous tier; quality caveat: described a red square as 'Blue' \u2014 vision works, accuracy varies",
+  "rate_limits": "unmeasured; be polite",
+  "region": "global",
+  "cwi_use_case": "keyless vision for image description, content moderation assist, multimodal agent products"
  }
 ]
